@@ -6,6 +6,7 @@ from playwright.async_api import async_playwright, Playwright
 import io
 from PIL import Image
 
+#googurl='https://support.google.com/accounts/answer/27441?hl=zh-Hans&co=GENIE.Platform%'
 googurl='https://accounts.google.com/SignUp?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default'
 
 # 全局变量定义
@@ -20,6 +21,7 @@ name_map = {"伟": "wei", "芳": "fang", "娜": "na", "敏": "min", "静": "jing
           "杰": "jie", "娟": "juan", "涛": "tao", "明": "ming", "超": "chao", "秀英": "xiuying",
           "霞": "xia", "平": "ping"}
 punctuations = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', ':', ';', '<', '>', '?', '/']
+gerenfullxpath='/html/body/div[2]/div/div[1]/section/div/div[1]/article/section/div/div[1]/div/div[3]/a[1]'
 xingfullxpath='/html/body/div[2]/div[1]/div[1]/div[2]/c-wiz/main/div[2]/div/div/div/form/span/section/div/div/div/div[1]/div[1]/div/div[1]/div/div[1]/input'
 namefullxpath='/html/body/div[2]/div[1]/div[1]/div[2]/c-wiz/main/div[2]/div/div/div/form/span/section/div/div/div/div[1]/div[2]/div/div[1]/div/div[1]/input'
 nextfullxpath='/html/body/div[2]/div[1]/div[1]/div[2]/c-wiz/main/div[3]/div/div/div/div/button/span'
@@ -82,7 +84,8 @@ async def run(playwright: Playwright):
 
     page = await default_context.new_page()
     await page.goto(googurl)
-
+    await handle_script(page)
+async def handle_script(page):
     # 等待xingfullxpath元素出现并点击
     print("等待姓输入框出现...")
     await page.wait_for_selector(f"xpath={xingfullxpath}", timeout=10000)
@@ -144,7 +147,7 @@ async def run(playwright: Playwright):
 
     # 随机选择性别 (1为男性，2为女性)
     gender = random.choice([1, 2])
-    gender_text = "男" if gender == 1 else "女"
+    gender_text = "Male" if gender == 1 else "Female"
     # 使用文本内容定位性别选项
     gender_option = f"//li[.//span[text()='{gender_text}']]"
     await page.wait_for_selector(f"xpath={gender_option}", timeout=5000)
@@ -258,6 +261,7 @@ async def run(playwright: Playwright):
 
     time.sleep(2)
     closeBrowser(browser_id)
+
 
 async def get_phone_number_from_api():
     """通过API获取手机号码的函数

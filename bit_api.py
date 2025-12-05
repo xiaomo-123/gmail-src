@@ -15,7 +15,7 @@ proxy_config = {
     "proxyType": "http",  # 代理类型：http/https/socks5
     "host": "us.922s5.net",  # 代理IP
     "port": 6300,  # 代理端口
-    "proxyUserName": "10612568jK-zone-custom-sessid-kxosorD3",  # 代理账号（无则留空）
+    "proxyUserName": "10612568jK-zone-custom-sessid-FGMQNhfy",  # 代理账号（无则留空）
     "proxyPassword": "PelENhew"   # 代理密码（无则留空）
 }
 
