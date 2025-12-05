@@ -6,10 +6,10 @@ from playwright.async_api import async_playwright, Playwright
 
 
 async def run(playwright: Playwright):
-  browser_ids = getBrowserIds()
-  browser_id=browser_ids[1]  
-  # /browser/open 接口会返回 selenium使用的http地址，以及webdriver的path，直接使用即可
-  #browser_id = "1ce676a2ae0a41bcaf73c6934d8ff230" # 窗口ID从窗口配置界面中复制，或者api创建后返回
+  # browser_ids = getBrowserIds()
+  # browser_id=browser_ids[1]  
+  browser_id = createBrowser()   
+  update_proxy_for_single_window(browser_id) 
   res = openBrowser(browser_id)
   ws = res['data']['ws']
   print("ws address ==>>> ", ws)
@@ -18,12 +18,12 @@ async def run(playwright: Playwright):
   browser = await chromium.connect_over_cdp(ws)
   default_context = browser.contexts[0]
 
-  print('new page and goto baidu')
+  print('new page and goto IP query API')
 
   page = await default_context.new_page()
-  await page.goto('https://baidu.com')
+  await page.goto('https://api.ipify.org?format=json')
 
-  time.sleep(2)
+  time.sleep(100)
 
   print('clsoe page and browser')
   await page.close()

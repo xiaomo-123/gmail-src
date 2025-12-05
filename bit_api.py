@@ -10,6 +10,14 @@ import time
 url = "http://127.0.0.1:54345"
 headers = {'Content-Type': 'application/json'}
 
+proxy_config = {
+    "proxyMethod": 2,  # 2=自定义代理，3=API提取IP
+    "proxyType": "http",  # 代理类型：http/https/socks5
+    "host": "us.922s5.net",  # 代理IP
+    "port": 6300,  # 代理端口
+    "proxyUserName": "10612568jK-zone-custom-sessid-kxosorD3",  # 代理账号（无则留空）
+    "proxyPassword": "PelENhew"   # 代理密码（无则留空）
+}
 
 def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPrint 如没有特定需求，只需要指定下内核即可，如果需要更详细的参数，请参考文档
     json_data = {
@@ -21,6 +29,7 @@ def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPri
         'host': '',  # 代理主机
         'port': '',  # 代理端口
         'proxyUserName': '',  # 代理账号
+        'proxyPassword': '',
         "browserFingerPrint": {  # 指纹对象
             'coreVersion': '124'  # 内核版本，注意，win7/win8/winserver 2012 已经不支持112及以上内核了，无法打开
         }
@@ -31,7 +40,31 @@ def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPri
     browserId = res['data']['id']
     print(browserId)
     return browserId
-
+def update_proxy_for_single_window(window_id):
+    """更新单个窗口的代理IP配置"""
+    if not window_id:
+        return
+    
+    update_data = {
+        "ids": [window_id],  # 单个ID也需传入列表
+        "proxyMethod": proxy_config["proxyMethod"],
+        "proxyType": proxy_config["proxyType"],
+        "host": proxy_config["host"],
+        "port": proxy_config["port"],
+        "proxyUserName": proxy_config["proxyUserName"],
+        "proxyPassword": proxy_config["proxyPassword"]
+    }
+    
+    res = requests.post(
+        f"{url}/browser/update/partial",
+        data=json.dumps(update_data),
+        headers=headers
+    ).json()
+    
+    if res["success"]:
+        print(f"窗口 {window_id} 代理更新成功")
+    else:
+        print(f"窗口 {window_id} 代理更新失败：{res['msg']}")
 
 def updateBrowser():  # 更新窗口，支持批量更新和按需更新，ids 传入数组，单独更新只传一个id即可，只传入需要修改的字段即可，比如修改备注，具体字段请参考文档，browserFingerPrint指纹对象不修改，则无需传入
     json_data = {'ids': ['93672cf112a044f08b653cab691216f0'],
