@@ -76,9 +76,26 @@ def updateBrowser():  # 更新窗口，支持批量更新和按需更新，ids �
 
 def openBrowser(id):  # 直接指定ID打开窗口，也可以使用 createBrowser 方法返回的ID
     json_data = {"id": f'{id}'}
-    res = requests.post(f"{url}/browser/open",
-                        data=json.dumps(json_data), headers=headers).json()
-    return res
+    try:
+        response = requests.post(f"{url}/browser/open",
+                                data=json.dumps(json_data), headers=headers)
+        res = response.json()
+        print(f"openBrowser响应状态码: {response.status_code}")
+        print(f"openBrowser响应内容: {res}")
+        
+        # 检查响应结构
+        if not isinstance(res, dict):
+            print(f"错误：响应不是字典: {res}")
+            return {"error": "响应不是字典", "response": str(res)}
+            
+        if "success" in res and not res["success"]:
+            print(f"API调用失败: {res.get('msg', '未知错误')}")
+            return res
+            
+        return res
+    except Exception as e:
+        print(f"openBrowser发生异常: {e}")
+        return {"error": str(e)}
 
 def getBrowserIds():  # 获取窗口ID列表
     json_data = {"page": 0,
