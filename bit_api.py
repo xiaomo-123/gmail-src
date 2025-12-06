@@ -31,6 +31,27 @@ def load_proxy_config():
 
 proxy_config = load_proxy_config()
 
+def test_proxy_connection(proxy_config):
+    """测试代理连接是否有效"""
+    try:
+        # 使用简单的HTTP请求测试代理
+        proxies = {
+            "http": f"{proxy_config['proxyType']}://{proxy_config['proxyUserName']}:{proxy_config['proxyPassword']}@{proxy_config['host']}:{proxy_config['port']}",
+            "https": f"{proxy_config['proxyType']}://{proxy_config['proxyUserName']}:{proxy_config['proxyPassword']}@{proxy_config['host']}:{proxy_config['port']}"
+        } if proxy_config.get("proxyUserName") and proxy_config.get("proxyPassword") else {
+            "http": f"{proxy_config['proxyType']}://{proxy_config['host']}:{proxy_config['port']}",
+            "https": f"{proxy_config['proxyType']}://{proxy_config['host']}:{proxy_config['port']}"
+        }
+        
+        # 设置超时时间，避免长时间等待
+        response = requests.get("http://httpbin.org/ip", proxies=proxies, timeout=5)
+        if response.status_code == 200:
+            print("代理连接测试成功")
+            return True
+    except Exception as e:
+        print(f"代理连接测试失败: {str(e)}")
+    return False
+
 def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPrint 如没有特定需求，只需要指定下内核即可，如果需要更详细的参数，请参考文档
     json_data = {
         'name': 'google',  # 窗口名称
@@ -55,6 +76,8 @@ def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPri
 def update_proxy_for_single_window(window_id):
     """更新单个窗口的代理IP配置"""
     if not window_id:
+        return
+    if not test_proxy_connection(proxy_config):
         return
     
     update_data = {
@@ -135,14 +158,14 @@ def deleteBrowser(id):  # 删除窗口
           data=json.dumps(json_data), headers=headers).json())
 
 
-if __name__ == '__main__':
-    browser_id = createBrowser()
-    openBrowser(browser_id)
+# if __name__ == '__main__':
+#     browser_id = createBrowser()
+#     openBrowser(browser_id)
 
-    time.sleep(10)  # 等待10秒自动关闭窗口
+#     time.sleep(10)  # 等待10秒自动关闭窗口
 
-    closeBrowser(browser_id)
+#     closeBrowser(browser_id)
 
-    time.sleep(10)  # 等待10秒自动删掉窗口
+#     time.sleep(10)  # 等待10秒自动删掉窗口
 
-    deleteBrowser(browser_id)
+#     deleteBrowser(browser_id)

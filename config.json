@@ -1,10 +1,10 @@
 {
     "proxy_config": {
         "proxyMethod": 2,
-        "proxyType": "http",
-        "host": "us.922s5.net",
-        "port": 6300,
-        "proxyUserName": "10612568jK-zone-custom-sessid-FGMQNhfy",
-        "proxyPassword": "PelENhew"
+        "proxyType": "socks5",
+        "host": "na.proxys5.net",
+        "port": 6200,
+        "proxyUserName": "10612568-zone-custom-region-US",
+        "proxyPassword": "uuQSufVA"
     }
 }
