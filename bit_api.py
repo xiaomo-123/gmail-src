@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import os
 
 # 官方文档地址
 # https://doc2.bitbrowser.cn/jiekou/ben-di-fu-wu-zhi-nan.html
@@ -10,14 +11,25 @@ import time
 url = "http://127.0.0.1:54345"
 headers = {'Content-Type': 'application/json'}
 
-proxy_config = {
-    "proxyMethod": 2,  # 2=自定义代理，3=API提取IP
-    "proxyType": "http",  # 代理类型：http/https/socks5
-    "host": "us.922s5.net",  # 代理IP
-    "port": 6300,  # 代理端口
-    "proxyUserName": "10612568jK-zone-custom-sessid-FGMQNhfy",  # 代理账号（无则留空）
-    "proxyPassword": "PelENhew"   # 代理密码（无则留空）
-}
+# 从配置文件加载代理配置
+def load_proxy_config():
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = json.load(f)
+            return config.get("proxy_config", {})
+    except (FileNotFoundError, json.JSONDecodeError):
+        # 如果配置文件不存在或格式错误，返回默认配置
+        return {
+            "proxyMethod": 2,
+            "proxyType": "http",
+            "host": "us.922s5.net",
+            "port": 6300,
+            "proxyUserName": "10612568jK-zone-custom-sessid-FGMQNhfy",
+            "proxyPassword": "PelENhew"
+        }
+
+proxy_config = load_proxy_config()
 
 def createBrowser():  # 创建或者更新窗口，指纹参数 browserFingerPrint 如没有特定需求，只需要指定下内核即可，如果需要更详细的参数，请参考文档
     json_data = {
